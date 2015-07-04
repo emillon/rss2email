@@ -161,6 +161,9 @@ def smtp_send(sender, recipient, message, config=None, section='DEFAULT'):
         try:
             if not ssl:
                 protocol_name = config.get(section, 'smtp-ssl-protocol')
+                if protocol_name == 'SSLv3':
+                    _LOG.warning('SSLv3 is not available, defaulting to TLSv1.')
+                    protocol_name = 'TLSv1'
                 protocol = getattr(_ssl, 'PROTOCOL_{}'.format(protocol_name))
                 try:
                     smtp.starttls(context=_ssl.SSLContext(protocol=protocol))
